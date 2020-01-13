@@ -433,31 +433,32 @@ class CrashBenchDataEntryer(object):
         while CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/stsDataFilePathNotEnterred.png",confidence = 1)[0]:
             time.sleep(0.1)
         pyag.press('enter')
-        for crashChSelStr in crashChSelList:
-            for i in range(3):
-                tmpLoc = CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/dialogDataFileOpen.png",confidence = 1)
-                if tmpLoc[0]:
-                    break
-                time.sleep(0.1)
-            if not tmpLoc[0]:
+        for crashChSelStrInd in range(len(crashChSelList)):
+            if crashChSelStrInd:
                 pyag.press('f4')   
                 tmpLoc = CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/dialogDataFileOpen.png",confidence = 1)            
                 while not tmpLoc[0]:
                     time.sleep(0.1)
                     tmpLoc = CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/dialogDataFileOpen.png",confidence = 1)            
                 pyag.click(tmpLoc[1] + 70,tmpLoc[2] - 28)
-            CrashBenchDataEntryer.setClipboardData(crashChSelStr)        
+            CrashBenchDataEntryer.setClipboardData(crashChSelList[crashChSelStrInd])        
             time.sleep(0.1)
             pyag.hotkey('ctrl', 'v')
             while CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/stsDataFilePathNotEnterred.png",confidence = 1)[0]:
                 time.sleep(0.1)
             pyag.press('enter')
-            while CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/stsDataReading.png",confidence = 1)[0]:
-                time.sleep(0.2)
-            while CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/stsDataReadFailed.png",confidence = 1)[0]:
-                logging.info("Failed To Read Data With Fob " + fullFobFilePath)
-                pyag.press('enter')
-                time.sleep(0.2)
+            for i in range(3):
+                time.sleep(0.7)
+                tmpLoc = CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/stsDataProcessing.png",confidence = 1)[0]
+                if not tmpLoc:
+                    break
+            if tmpLoc:
+                while CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/stsDataReading.png",confidence = 1)[0]:
+                    time.sleep(0.2)
+                while CrashBenchDataEntryer.locateCenterOnScreen("imgTpl/stsDataReadFailed.png",confidence = 1)[0]:
+                    logging.info("Failed To Read Data With Fob " + fullFobFilePath)
+                    pyag.press('enter')
+                    time.sleep(0.2)
         return True
         
     def importSingleCrashDataToCrashBenchNG332(fobFileDict):
@@ -660,7 +661,7 @@ class CrashBenchDataEntryer(object):
         self.lblUnit.setText(_translate("MainWindow", "Unit"))
         self.lblSamplingTimeUnit.setText(_translate("MainWindow", "ms"))
 
-if __name__ == "__main__":
+def main():
     tmpTopLevelWin = Tk()
     tmpTopLevelWin.attributes("-topmost",True)
     tmpTopLevelWin.withdraw()
@@ -669,4 +670,7 @@ if __name__ == "__main__":
     myprog = CrashBenchDataEntryer()
     myprog.setupUi(MainWindow)    
     MainWindow.show()
-    app.exec_()
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
