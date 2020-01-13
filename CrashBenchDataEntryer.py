@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import ntpath
+import os
 from os import listdir, makedirs
 import os.path as osPath
 from multiprocessing import Pool
@@ -14,7 +15,9 @@ from random import randint
 import time
 import win32clipboard
 
+
 logging.basicConfig(filename=("CrashBenchDataEntryer.log"), level=logging.DEBUG, format='%(asctime)s: %(message)s')
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class CrashBenchDataEntryer(object):
     def setupUi(self, MainWindow):
